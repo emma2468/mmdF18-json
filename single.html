@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babushka</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">Bistro Babushka</div>
+        <nav>
+            <button class="tilbage">Tilbage</button>
+        </nav>
+        <h1></h1>
+    </header>
+
+
+
+    <main class="container">
+        <section class="data_container">
+            <article>
+                <img src="" at=""><br>
+                <div class="billedtekst">
+                    <h2 class="navn"></h2><br>
+                    <span class="kortBeskrivelse"></span><br>
+                    <span class="langBeskrivelse"></span><br>
+                    Pris: <span class="pris"></span><br>
+                    Oprindelsesregion: <span class="oprindelsesregion"></span>
+                </div>
+            </article>
+        </section>
+    </main>
+    <!--JAVASCRIPT-->
+    <script>
+        let urlParams = new URLSearchParams(window.location.search);
+        let navn = urlParams.get("navn");
+        console.log(navn);
+
+
+        document.addEventListener("DOMContentLoaded", hentJson);
+
+        async function hentJson() {
+            console.log("jsonHentet");
+
+            let myJson = await fetch("menu.json");
+            retter = await myJson.json();
+            visRetter();
+        }
+
+        document.querySelectorAll(".menu_item").forEach(knap => {
+            knap.addEventListener("click", filtrering);
+        })
+
+        function filtrering() {
+            destination.textContent = "";
+            retFilter = this.getAttribute("data-kategori");
+            visRetter();
+        }
+
+        function visRetter() {
+            let display = document.querySelector(".data_container");
+            retter.forEach(retten => {
+                if (retten.navn == navn) {
+                    display.querySelector(".navn").textContent = retten.navn;
+                    display.querySelector("img").src = "babushka_assets/imgs/large/" + retten.billede + ".jpg";
+                    display.querySelector("img").alt = retten.navn;
+                    display.querySelector(".langBeskrivelse").textContent = retten.langbeskrivelse;
+                    display.querySelector(".pris").textContent = retten.pris;
+                    display.querySelector(".oprindelsesregion").textContent = retten.oprindelsesregion;
+                }
+            })
+        }
+
+        document.querySelector(".tilbage").addEventListener("click", function(){
+            window.location.href="index.html";
+        })
+    </script>
+    <!--JAVASCRIPT-->
+</body>
+<footer>
+    <span class="footer">Adresse:</span>
+    <span class="footer">Grønnegade 97</span>
+    <span class="footer">1234 Københvan K</span>
+    <span class="footer">Åbningstider:</span>
+    <span class="footer">Mandag - Fredag 10:30 - 22:00</span>
+    <span class="footer">Lørdag 12:00 - 23:00</span>
+</footer>
+</html>

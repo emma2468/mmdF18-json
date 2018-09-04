@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babushka</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+      <!--       Modal effekt html start-->
+        <section id="modal">
+            <button>Close</button>
+            <div id="modal_content">
+                <h2 class="modal_navn"></h2>
+                <img class="modal_billede" src="" alt=""><br>
+                <span class="modal_kategori"></span><br>
+                <span class="modal_langBeskrivelse"></span><br>
+                Pris: <span class="modal_pris"></span><br>
+                Oprindelsesregion: <span class="modal_oprindelsesregion"></span>
+            </div>
+        </section>
+<!--       Modal effekt html end-->
+       <header>
+         <div class="logo">Bistro Babushka</div>
+          <nav>
+           <button class="menu_item" data-kategori="alle">Alle</button>
+           <button class="menu_item" data-kategori="forretter">Foretter</button>
+           <button class="menu_item" data-kategori="hovedretter">Hovedretter</button>
+           <button class="menu_item" data-kategori="desserter">Desserter</button>
+           <button class="menu_item" data-kategori="drikkevarer">Drikkevarer</button>
+           <button class="menu_item" data-kategori="sideorders">Sideorders</button>
+           </nav>
+           <h1></h1>
+       </header>
+
+       <template class="ret_template">
+           <article>
+               <img src="" at=""><br>
+               <div class="billedtekst">
+               <h2 class="navn"></h2><br>
+               <span class="kortBeskrivelse"></span><br>
+               <span class="langBeskrivelse"></span><br>
+               Pris: <span class="pris"></span><br>
+               <span class="oprindelsesregion"></span>
+               </div>
+           </article>
+       </template>
+
+   <main class="container">
+       <section class="data_container">
+       </section>
+   </main>
+<!--JAVASCRIPT-->
+   <script>
+        let retter;
+let destination = document.querySelector(".data_container");
+let retFilter = "alle";
+let modal = document.querySelector("#modal");
+
+
+document.addEventListener("DOMContentLoaded", hentJson);
+
+async function hentJson(){
+    console.log("jsonHentet");
+
+    let myJson = await fetch("menu.json");
+    retter = await myJson.json();
+    visRetter();
+}
+
+document.querySelectorAll(".menu_item").forEach(knap=>{
+    knap.addEventListener("click", filtrering);
+})
+
+function filtrering(){
+    destination.textContent = "";
+    retFilter = this.getAttribute("data-kategori");
+    visRetter();
+}
+
+function visRetter(){
+    console.log("hentRetter");
+
+    let template = document.querySelector(".ret_template");
+    let destination = document.querySelector(".data_container");
+    document.querySelector("header h1").textContent = retFilter;
+
+    retter.forEach (ret =>{
+        if(ret.kategori == retFilter || retFilter=="alle"){
+        let klon = template.cloneNode(true).content;
+        klon.querySelector("h2").textContent = ret.navn;
+        klon.querySelector("img"). src = "babushka_assets/imgs/large/" + ret.billede + ".jpg";
+            //Modal effekt html start
+            klon.querySelector("img").addEventListener("click", ()=>{
+                visModal(ret);
+            })
+            //Modal effekt html end
+
+        klon.querySelector(".kortBeskrivelse").textContent = ret.kortbeskrivelse;
+        klon.querySelector(".pris").textContent = ret.pris;
+        destination.appendChild(klon);}
+    })
+}
+//Modal effekt html start
+function visModal(retten){
+    modal.classList.add("vis");
+    modal.querySelector(".modal_navn").textContent=retten.navn;
+    modal.querySelector(".modal_billede").src="babushka_assets/imgs/large/" + retten.billede + ".jpg";
+    modal.querySelector(".modal_billede").alt="Foto af " + retten.billede;
+    modal.querySelector(".modal_kategori").textContent=retten.kategori;
+    modal.querySelector(".modal_langBeskrivelse").textContent=retten.langbeskrivelse;
+    modal.querySelector(".modal_pris").textContent=retten.pris;
+    modal.querySelector(".modal_oprindelsesregion").textContent=retten.oprindelsesregion;
+
+    modal.querySelector("button").addEventListener("click", skjulModal);
+}
+
+function skjulModal(){
+    modal.classList.remove("vis");
+}
+//Modal effekt html end
+
+    </script>
+<!--JAVASCRIPT-->
+</body>
+<footer>
+    <span class="footer">Adresse:</span>
+    <span class="footer">Grønnegade 97</span>
+    <span class="footer">1234 Københvan K</span>
+    <span class="footer">Åbningstider:</span>
+    <span class="footer">Mandag - Fredag 10:30 - 22:00</span>
+    <span class="footer">Lørdag 12:00 - 23:00</span>
+</footer>
+</html>
